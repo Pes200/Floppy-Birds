@@ -1,0 +1,126 @@
+//Class User
+
+public class User {
+
+    private int id;
+    private String name;
+    private String age;
+
+
+    public User(){
+
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " " + "{id" + " " + id + " " + "name"  + " "  +
+        name + " " + "age" + " " + age + "}";
+
+
+    }
+
+    public User(String name, String age){
+        this.name = name;
+        this.age  = age;
+    }
+
+    public User(String name, String age, int id){
+        this.name = name;
+        this.age  = age;
+        this.id = id;
+    }
+
+    public int getID(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+
+    public void setAge(String age){
+        this.age = age;
+    }
+
+    public String getAge(){
+        return age;
+    }
+}
+
+
+
+//Класс DBWorker
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class DBWorker {
+
+    private static final String URL = "jdbc:mysql://localhost:3306/my_db1";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "root";
+    private Connection connection;
+
+    public DBWorker(){
+        try{
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+
+}
+
+
+//Класс Main
+
+import com.mysql.fabric.jdbc.FabricMySQLDriver;
+import com.sun.glass.ui.EventLoop;
+
+import java.sql.*;
+
+public class Main {
+
+
+    public static void main(String[] args) {
+        DBWorker worker = new DBWorker();
+
+        String query = "select * from users";
+        try {
+            Statement statement = worker.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()){
+                User user = new User();
+                user.setId(resultSet.getInt(1));
+                user.setName(resultSet.getString(2));
+                user.setAge(resultSet.getString(3));
+
+                System.out.println(user);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+}
+
+
